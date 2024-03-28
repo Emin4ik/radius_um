@@ -18,8 +18,9 @@ class MerchantController extends Controller
         $validated = $request->validate([
             'merchant' => 'required|max:255' // |unique:merchants
         ]);
-
+        $request->session()->put('shop', $validated['merchant']);
         $result = $this->checkMerchant($validated['merchant']);
+        $request->session()->put('shop_id', $result['merchants'][0]['internal_id']);
         if($result){
             $merchant = new Merchant();
             $merchant->user_id = Auth::id();
