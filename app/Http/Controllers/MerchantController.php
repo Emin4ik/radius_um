@@ -35,37 +35,46 @@ class MerchantController extends Controller
         }else{
             return redirect()->route('merchant')->with('error', 'No Merchant founded');
         }
+
+        $url = 'https://umico.az/catalog/v3/market/products?page=1&per_page=1&q[opaque_id]=/ru/merchant/' . urlencode(session()->get('shop')) . '?page=2&q[seller_marketing_name_id_eq]=' . session()->get('shop_id') . '&include_fields=id&exclude_fields=ratings.questions,ratings.assessment_id,ratings.product_id&q[search_mode]=seller&q[response_mode]=default&q[default_facets]=true&q[s]=discount_score desc&q[status_in]=active';
+        try {
+            $response = Http::get($url);
+            if ($response->successful()) {
+                $responseData = $response->json();
+                if (isset($responseData['products'])) {
+                    $meta = $responseData['meta'];
+                    Merchant::where('uniq_id', $merchant->uniq_id)->update(['total_rows', $meta['total_entries']]);
+                } else {
+                    return redirect()->route('merchant')->with('error', 'Not products founded');
+
+                }
+            } else {
+                return redirect()->route('merchant')->with('error', 'Not success response');
+            }
+        } catch (Exception $e) {
+            return redirect()->route('merchant')->with('error', $e);
+        }
         return redirect()->route('store', ['id' => $merchantId])->with('success', 'New Merchant added successfully');
     }
 
-    protected function checkMerchant($name='Ezzy Shop'){
+    protected function checkMerchant($name){
         $url = 'https://umico.az/catalog/v3/market/suggests?q[full_text]=' . urlencode($name) . '&per_page=1&q[opaque_id]=/ru';
         try {
             $response = Http::get($url);
             if ($response->successful()) {
-                // If the request is successful, return true indicating data is available
                 $responseData = $response->json();
-
-                // Check if 'results' key exists in the response data
                 if (isset($responseData['data']['results'])) {
-                    // Extract products and merchants data
                     $products = $responseData['data']['results']['products'];
                     $merchants = $responseData['data']['results']['merchants'];
-
-                    // Return an array containing both products and merchants data
                     return ['products' => $products, 'merchants' => $merchants];
                 } else {
-                    // If 'results' key is not found, return false indicating no data is available
-                    return false;
+                    return redirect()->route('merchant')->with('error', 'No Data exists');
                 }
             } else {
-                // If the request is not successful, return false indicating no data is available
-                return false;
+                return redirect()->route('merchant')->with('error', 'Not successfull response');
             }
         } catch (Exception $e) {
-            // Handle exceptions if any, and return false
-            return false;
+            return redirect()->route('merchant')->with('error', $e);
         }
-        // https://umico.az/catalog/v3/market/suggests?q[full_text]=ezzy%20shop&per_page=1&q[opaque_id]=/ru
     }
 }

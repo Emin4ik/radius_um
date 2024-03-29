@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('internal_id');
             $table->integer('uniq_id');
             $table->string('ext_id', 72);
+            $table->integer('total_rows')->nullable();
             $table->string('thumb', 120);
             $table->string('original', 120);
             $table->timestamps();
