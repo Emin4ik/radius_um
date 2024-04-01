@@ -16,7 +16,7 @@ class MerchantController extends Controller
 
     public function create(Request $request){
         $validated = $request->validate([
-            'merchant' => 'required|max:255' // |unique:merchants
+            'merchant' => 'required|max:255'
         ]);
         $request->session()->put('shop', $validated['merchant']);
         $result = $this->checkMerchant($validated['merchant']);
@@ -35,18 +35,16 @@ class MerchantController extends Controller
         }else{
             return redirect()->route('merchant')->with('error', 'No Merchant founded');
         }
-
         $url = 'https://umico.az/catalog/v3/market/products?page=1&per_page=1&q[opaque_id]=/ru/merchant/' . urlencode(session()->get('shop')) . '?page=2&q[seller_marketing_name_id_eq]=' . session()->get('shop_id') . '&include_fields=id&exclude_fields=ratings.questions,ratings.assessment_id,ratings.product_id&q[search_mode]=seller&q[response_mode]=default&q[default_facets]=true&q[s]=discount_score desc&q[status_in]=active';
         try {
             $response = Http::get($url);
             if ($response->successful()) {
                 $responseData = $response->json();
-                if (isset($responseData['products'])) {
+                if (isset($responseData['meta'])) {
                     $meta = $responseData['meta'];
-                    Merchant::where('uniq_id', $merchant->uniq_id)->update(['total_rows', $meta['total_entries']]);
+                    Merchant::where('uniq_id', $result['merchants'][0]['id'])->update(['total_rows' => $meta['total_entries']]);
                 } else {
                     return redirect()->route('merchant')->with('error', 'Not products founded');
-
                 }
             } else {
                 return redirect()->route('merchant')->with('error', 'Not success response');

@@ -18,13 +18,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('merchant', [MerchantController::class, 'index'])->name('merchant');
+
+    Route::post('merchant.create', [MerchantController::class, 'create'])->name('merchant.create');
+
+    Route::get('store/{id}', [StoreController::class, 'index'])->name('store');
+
 });
 
-Route::get('merchant', [MerchantController::class, 'index'])->name('merchant');
 
-Route::post('merchant.create', [MerchantController::class, 'create'])->name('merchant.create');
-
-Route::get('store/{id}', [StoreController::class, 'index'])->name('store');
 
 require __DIR__.'/auth.php';
 
