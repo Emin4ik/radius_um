@@ -18,19 +18,4 @@ class StoreController extends Controller
         );
     }
 }
-// products
-//   offers_count
-//       retail_price
-//       old_price
-//       partner_rating
-//       marketing_name['name']
-//       marketing_name['logo']['thumbnail']
-//   old_price
-//   discount
-//   retail_price
-//   img_url_thumbnail
-//   manufacturer
-//   score
-//   search_variant_code
-//   name
-//   slugged_name
+

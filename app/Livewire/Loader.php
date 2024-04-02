@@ -25,16 +25,53 @@ class Loader extends Component
                 if (isset($responseData['products'])) {
                     $meta = $responseData['meta'];
                     $products = $responseData['products'];
-                    $store = new Store();
-                    $offer = new Offers();
+                    // dd($products[0]['offers'][0]['marketing_name']['internal_id']);
                     foreach($products as $product){
-
-                        foreach($product as $offer){
-
+                        $store = new Store();
+                        $store->user_id = Auth::id();
+                        $store->default_merchant_uuid = $product['default_merchant_uuid'];
+                        $store->product_id = $product['id'];
+                        $store->old_price = $product['old_price'];
+                        $store->retail_price = $product['retail_price'];
+                        $store->discount = $product['discount'];
+                        $store->img_url_thumbnail = $product['img_url_thumbnail'];
+                        $store->manufacturer = $product['manufacturer'];
+                        $store->score = $product['score'];
+                        $store->search_variant_code = $product['search_variant_code'];
+                        $store->name = $product['name'];
+                        $store->slugged_name = $product['slugged_name'];
+                        try {
+                            $store->save();
+                        } catch (Exception $e) {
+                            dd($e->getMessage());
                         }
-
+                        $store_id = $store->id;
+                        $offers = $product['offers'];
+                        if(count($offers)>0){
+                            foreach($offers as $opponent){
+                                //dd($offer['marketing_name']['internal_id']);
+                                $offer = new Offers();
+                                $offer->user_id = Auth::id();
+                                $offer->store_id = $store_id;
+                                $offer->offer_id = $opponent['id'];
+                                $offer->offer_uuid = $opponent['uuid'];
+                                $offer->retail_price = $opponent['retail_price'];
+                                $offer->offer_merchant_uuid = $opponent['merchant_uuid'];
+                                $offer->seller_id = $opponent['seller_id'];
+                                $offer->old_price = $opponent['old_price'];
+                                $offer->partner_rating = $opponent['partner_rating'];
+                                $offer->internal_id = $opponent['marketing_name']['internal_id'];
+                                $offer->name = $opponent['marketing_name']['name'];
+                                $offer->logo = $opponent['marketing_name']['logo']['thumbnail'];
+                                try {
+                                    $offer->save();
+                                } catch (Exception $e) {
+                                    dd($e->getMessage());
+                                }
+                            }
+                        }
                     }
-                    dd( ['meta' => $meta, 'products' => $products]);
+                    // dd( ['meta' => $meta, 'products' => $products]);
                 } else {
                     dd('error');
                     return false;
