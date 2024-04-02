@@ -18,9 +18,13 @@ class MerchantController extends Controller
         $validated = $request->validate([
             'merchant' => 'required|max:255'
         ]);
-        $request->session()->put('shop', $validated['merchant']);
         $result = $this->checkMerchant($validated['merchant']);
-        $request->session()->put('shop_id', $result['merchants'][0]['internal_id']);
+        if(count($result['merchants']) > 0){
+            $request->session()->put('shop', $validated['merchant']);
+            $request->session()->put('shop_id', $result['merchants'][0]['internal_id']);
+        }else{
+            return redirect()->route('merchant')->with('error', 'No Merchant founded');
+        }
         if($result){
             $merchant = new Merchant();
             $merchant->user_id = Auth::id();

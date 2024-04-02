@@ -2,6 +2,8 @@
 
 namespace App\Livewire;
 
+use App\Models\Offers;
+use App\Models\Store;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
@@ -23,6 +25,15 @@ class Loader extends Component
                 if (isset($responseData['products'])) {
                     $meta = $responseData['meta'];
                     $products = $responseData['products'];
+                    $store = new Store();
+                    $offer = new Offers();
+                    foreach($products as $product){
+
+                        foreach($product as $offer){
+
+                        }
+
+                    }
                     dd( ['meta' => $meta, 'products' => $products]);
                 } else {
                     dd('error');
