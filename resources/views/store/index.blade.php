@@ -7,20 +7,13 @@
     <div class="px-4 py-4 md:px-10 md:py-7">
         <div class="flex items-center justify-between">
             <p tabindex="0" class="text-base font-bold leading-normal text-gray-800 focus:outline-none sm:text-lg md:text-xl lg:text-2xl">{{$merchant->name}} </p>
-            <div class="flex items-center px-4 py-3 text-sm font-medium leading-none text-gray-600 bg-gray-200 rounded cursor-pointer hover:bg-gray-300">
-                <p>Total products: {{$merchant->total_rows}}</p>
-                {{-- <p>Sort By:</p>
-                <select aria-label="select" class="ml-1 bg-transparent focus:text-indigo-600 focus:outline-none">
-                    <option class="text-sm text-indigo-800">Latest</option>
-                    <option class="text-sm text-indigo-800">Oldest</option>
-                    <option class="text-sm text-indigo-800">Latest</option>
-                </select> --}}
+            <div class="flex items-center text-sm font-medium leading-none text-gray-600 bg-gray-200 rounded cursor-pointer">
+                @livewire('Loader')
             </div>
         </div>
     </div>
-    <div class="px-4 py-4 md:px-10 md:py-7">
-        @livewire('Loader')
-    </div>
+    {{-- <div class="px-4 py-4 md:px-10 md:py-7">
+    </div> --}}
     <div class="px-4 py-4 bg-white md:py-7 md:px-8 xl:px-10">
         <div class="items-center justify-between sm:flex">
             <div class="flex items-center">
@@ -40,8 +33,8 @@
                     </div>
                 </a>
             </div>
-            <button onclick="popuphandler(true)" class="inline-flex items-start justify-start px-6 py-3 mt-4 bg-indigo-700 rounded focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 sm:mt-0 hover:bg-indigo-600 focus:outline-none">
-                <p class="text-sm font-medium leading-none text-white">Add Task</p>
+            <button class="inline-flex items-start justify-start px-6 py-3 mt-4 bg-indigo-700 rounded pointer-events-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 sm:mt-0 hover:bg-indigo-600 focus:outline-none">
+                <p class="text-sm font-medium leading-none text-white">Total products: {{$merchant->total_rows}}</p>
             </button>
         </div>
         <div class="overflow-x-auto mt-7">
