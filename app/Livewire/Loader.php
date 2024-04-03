@@ -6,6 +6,7 @@ use App\Models\Offers;
 use App\Models\Store;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Livewire\Component;
 
@@ -17,18 +18,24 @@ class Loader extends Component
     }
 
     protected function getGoods(){
-        $url = 'https://umico.az/catalog/v3/market/products?page=1&per_page=2&q[opaque_id]=/ru/merchant/' . urlencode(session()->get('shop')) . '?page=2&q[seller_marketing_name_id_eq]='.session()->get('shop_id').'&include_fields=id,old_price,retail_price,availability,default_offer_id,img_url_thumbnail,name,categories,manufacturer,avail_check,status,slugged_name,discount,default_marketing_name,ratings,offers,offers,offers.retail_price,offers,offers.marketing_name,offers.merchant_uuid,category_id,product_labels,loyalty_cashback,default_merchant_rating,offers.id,offers.installment_enabled,offers.max_installment_months,offers.avail_check,offers.partner_rating,offers.uuid,offers.old_price,offers.seller_id,offers.seller_marketing_name,best_installment_offer_id,qty,non_refundable,offers.supplier_id,is_bulk_heavy,default_merchant_uuid,categories.path_ids&exclude_fields=ratings.questions,ratings.assessment_id,ratings.product_id&q[search_mode]=seller&q[response_mode]=default&q[default_facets]=true&q[s]=discount_score desc&q[status_in]=active';
+        $url = 'https://umico.az/catalog/v3/market/products?page=1&per_page=100&q[opaque_id]=/ru/merchant/' . urlencode(session()->get('shop')) . '?page=2&q[seller_marketing_name_id_eq]='.session()->get('shop_id').'&include_fields=id,old_price,retail_price,availability,default_offer_id,img_url_thumbnail,name,categories,manufacturer,avail_check,status,slugged_name,discount,default_marketing_name,ratings,offers,offers,offers.retail_price,offers,offers.marketing_name,offers.merchant_uuid,category_id,product_labels,loyalty_cashback,default_merchant_rating,offers.id,offers.installment_enabled,offers.max_installment_months,offers.avail_check,offers.partner_rating,offers.uuid,offers.old_price,offers.seller_id,offers.seller_marketing_name,best_installment_offer_id,qty,non_refundable,offers.supplier_id,is_bulk_heavy,default_merchant_uuid,categories.path_ids&exclude_fields=ratings.questions,ratings.assessment_id,ratings.product_id&q[search_mode]=seller&q[response_mode]=default&q[default_facets]=true&q[s]=discount_score desc&q[status_in]=active';
         try {
             $response = Http::get($url);
             if ($response->successful()) {
+
                 $responseData = $response->json();
+                // dd($responseData);
+
+                $user_id = Auth::id();
+                DB::table('stores')->where('user_id', $user_id)->delete();
+                DB::table('offers')->where('user_id', $user_id)->delete();
                 if (isset($responseData['products'])) {
                     // $meta = $responseData['meta'];
                     $products = $responseData['products'];
                     // dd($products[0]['offers'][0]['marketing_name']['internal_id']);
                     foreach($products as $product){
                         $store = new Store();
-                        $store->user_id = Auth::id();
+                        $store->user_id = $user_id;
                         $store->default_merchant_uuid = $product['default_merchant_uuid'];
                         $store->product_id = $product['id'];
                         $store->old_price = $product['old_price'];
@@ -51,7 +58,7 @@ class Loader extends Component
                             foreach($offers as $opponent){
                                 //dd($offer['marketing_name']['internal_id']);
                                 $offer = new Offers();
-                                $offer->user_id = Auth::id();
+                                $offer->user_id = $user_id;
                                 $offer->store_id = $store_id;
                                 $offer->offer_id = $opponent['id'];
                                 $offer->offer_uuid = $opponent['uuid'];
