@@ -21,11 +21,15 @@ class StoreController extends Controller
         //     ->get()
         //     ->groupBy('id');
         $products = DB::table('stores')
-            ->select('stores.old_price', 'stores.retail_price', 'stores.discount', 'stores.img_url_thumbnail', 'stores.manufacturer', 'stores.score', 'stores.name')
+            ->select('stores.id' ,'stores.old_price', 'stores.retail_price', 'stores.discount', 'stores.img_url_thumbnail', 'stores.manufacturer', 'stores.score', 'stores.name')
             ->get();
         // dd($products);
+        $offers = DB::table('offers')
+        ->select('offers.store_id', 'offers.name', 'offers.retail_price', 'offers.old_price', 'offers.partner_rating', 'offers.name AS offer_name', 'offers.logo', 'offers.internal_id')
+        ->get();
         return view( 'store.index', [
                 'products' => $products,
+                'offers' => $offers,
                 'merchant' => $merchant
             ]
         );

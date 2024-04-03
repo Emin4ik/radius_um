@@ -22,14 +22,17 @@ class MerchantController extends Controller
         if(count($result['merchants']) > 0){
             $request->session()->put('shop', $validated['merchant']);
             $request->session()->put('shop_id', $result['merchants'][0]['internal_id']);
+            $request->session()->put('merchant_id', $result['merchants'][0]['partners_ext_ids'][0]);
         }else{
             return redirect()->route('merchant')->with('error', 'No Merchant founded');
         }
+        // dd($result);
         if($result){
             $merchant = new Merchant();
             $merchant->user_id = Auth::id();
             $merchant->name = $result['merchants'][0]['name'];
             $merchant->internal_id = $result['merchants'][0]['internal_id'];
+            $merchant->merchant_id = $result['merchants'][0]['partners_ext_ids'][0];
             $merchant->uniq_id = $result['merchants'][0]['id'];
             $merchant->ext_id = $result['merchants'][0]['ext_id'];
             $merchant->thumb = $result['merchants'][0]['logo']['thumbnail'];

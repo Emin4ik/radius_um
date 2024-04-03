@@ -23,7 +23,7 @@ class Loader extends Component
             if ($response->successful()) {
                 $responseData = $response->json();
                 if (isset($responseData['products'])) {
-                    $meta = $responseData['meta'];
+                    // $meta = $responseData['meta'];
                     $products = $responseData['products'];
                     // dd($products[0]['offers'][0]['marketing_name']['internal_id']);
                     foreach($products as $product){
