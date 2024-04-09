@@ -14,17 +14,18 @@ return new class extends Migration
         Schema::create('stores', function (Blueprint $table) {
             $table->id();
             $table->string('default_merchant_uuid', 50);
+            $table->boolean('positive')->default(false);
             $table->integer('user_id');
             $table->integer('product_id');
-            $table->float('old_price');
-            $table->float('retail_price');
-            $table->float('discount');
-            $table->string('img_url_thumbnail', 100);
-            $table->string('manufacturer', 90);
-            $table->float('score');
+            $table->float('old_price')->nullable();
+            $table->float('retail_price')->nullable();
+            $table->float('discount')->nullable();
+            $table->string('img_url_thumbnail', 100)->nullable();
+            $table->string('manufacturer', 90)->nullable();
+            $table->float('score')->nullable();
             $table->string('search_variant_code', 30);
             $table->string('name', 120);
-            $table->string('slugged_name', 120);
+            $table->string('slugged_name', 120)->nullable();
             $table->timestamps();
         });
     }

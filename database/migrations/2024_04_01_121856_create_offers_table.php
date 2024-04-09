@@ -17,14 +17,14 @@ return new class extends Migration
             $table->integer('store_id');
             $table->integer('offer_id');
             $table->string('offer_uuid', 40);
-            $table->float('retail_price');
+            $table->float('retail_price')->nullable();
             $table->string('offer_merchant_uuid', 40);
             $table->string('seller_id', 40);
-            $table->float('old_price');
-            $table->float('partner_rating');
+            $table->float('old_price')->nullable();
+            $table->float('partner_rating')->nullable();
             $table->integer('internal_id');
-            $table->string('name', 40);
-            $table->string('logo', 90);
+            $table->string('name', 40)->nullable();
+            $table->string('logo', 90)->nullable();
             $table->timestamps();
         });
     }
