@@ -1,13 +1,16 @@
+{{-- {{dd(session()->all())}} --}}
+
 @if (session()->has('success'))
     <div> <p class="text-white"> {{ session('success') }} </p></div>
 @endif
 @livewireStyles
 <script src="https://cdn.tailwindcss.com"></script>
-<div class="w-full sm:px-6">
+<x-app-layout>
+<div class="w-full">
     <div class="px-4 py-4 md:px-10 md:py-7">
         <div class="flex items-center justify-between">
-            <p tabindex="0" class="text-base font-bold leading-normal text-gray-800 focus:outline-none sm:text-lg md:text-xl lg:text-2xl">{{$merchant->name}} </p>
-            <div class="flex items-center text-sm font-medium leading-none text-gray-600 bg-gray-200 rounded cursor-pointer">
+            <p tabindex="0" class="text-base font-bold leading-normal text-gray-200 focus:outline-none sm:text-lg md:text-xl lg:text-2xl">{{$merchant->name}} </p>
+            <div class="flex items-center text-sm font-medium leading-none text-gray-400 bg-gray-200 rounded cursor-pointer">
                 @livewire('Loader')
             </div>
         </div>
@@ -18,29 +21,43 @@
     <div class="px-4 py-4 bg-white md:py-7 md:px-8 xl:px-10">
         <div class="items-center justify-between sm:flex">
             <div class="flex items-center">
-                <a href="{{route('store', ['id'=>1,'sortBy' => 'positive'])}}" class="rounded-full focus:outline-none focus:ring-2 focus:bg-indigo-50 focus:ring-indigo-800" href=" javascript:void(0)">
-                    <div class="px-8 py-2 text-indigo-700 bg-indigo-100 rounded-full">
-                        <p>All</p>
-                    </div>
-                </a>
-                <a href="{{route('store', ['id'=>1,'sortBy' => 'positive'])}}" class="ml-4 rounded-full focus:outline-none focus:ring-2 focus:bg-indigo-50 focus:ring-indigo-800 sm:ml-8">
-                    <div class="px-8 py-2 text-gray-600 rounded-full hover:text-indigo-700 hover:bg-indigo-100 ">
-                        <p>Positive</p>
-                    </div>
-                </a>
-                <a href="{{route('store', ['id'=>1,'sortBy' => 'negative'])}}" class="ml-4 rounded-full focus:outline-none focus:ring-2 focus:bg-indigo-50 focus:ring-indigo-800 sm:ml-8">
-                    <div class="px-8 py-2 text-gray-600 rounded-full hover:text-indigo-700 hover:bg-indigo-100 ">
+                {{-- @php
+                    {{ $positive = 0; }}
+                @endphp
+                @if (isset($_GET['sortBy']) && $_GET['sortBy'] && $_GET['sortBy']==='positive')
+                    @php $positive = 1; @endphp
+                @else
+                    @php $positive = 0; @endphp
+                @endif --}}
+                @php
+                    $positive = (isset($_GET['sortBy']) && $_GET['sortBy'] === 'positive') ? 1 : 0;
+                @endphp
+                {{-- {{dd($positive)}} --}}
+                <a href="{{route('store', ['id'=>$merchant->id,'sortBy' => 'negative'])}}" class="ml-4 rounded-full focus:outline-none focus:ring-2 focus:bg-indigo-50 focus:ring-indigo-800 sm:ml-8">
+                    <div class="px-8 py-2 text-gray-600 {{ ($positive!==1) ? 'bg-indigo-100' : '' }} rounded-full hover:text-indigo-700 hover:bg-indigo-200 ">
                         <p>Negative</p>
                     </div>
                 </a>
+                <a href="{{route('store', ['id'=>$merchant->id,'sortBy' => 'positive'])}}" class="ml-4 rounded-full focus:outline-none focus:ring-2 focus:bg-indigo-50 focus:ring-indigo-800 sm:ml-8">
+                    <div class="px-8 py-2 text-indigo-700 {{ ($positive!==1) ? '' : 'bg-indigo-100' }} rounded-full hover:text-indigo-700 hover:bg-indigo-200 ">
+                        <p>Positive</p>
+                    </div>
+                </a>
             </div>
-            <button class="inline-flex items-start justify-start px-6 py-3 mt-4 bg-indigo-700 rounded pointer-events-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 sm:mt-0 hover:bg-indigo-600 focus:outline-none">
+            {{-- <button class="inline-flex items-start justify-start px-6 py-3 mt-4 bg-indigo-700 rounded pointer-events-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 sm:mt-0 hover:bg-indigo-600 focus:outline-none">
                 <p class="text-sm font-medium leading-none text-white">Total products: {{$merchant->total_rows}}</p>
-            </button>
+            </button> --}}
+            <div>
+                {{ $products->appends(['sortBy' => $sort])->links() }}
+            </div>
+
         </div>
         <div class="overflow-x-auto mt-7">
             <table class="w-full whitespace-nowrap">
                 <tbody>
+                    {{-- @php
+                     dd(session()->get('merchant_id'));
+                    @endphp --}}
                     @foreach ($products as $item)
                         @if ($item->default_merchant_uuid == session()->get('merchant_id'))
                             @php $color = 'border-gray-100'; $bg_color = 'bg-slate-50'; @endphp
@@ -50,7 +67,7 @@
                         <tr tabindex="0" class="h-16 border {{ $bg_color }} focus:outline-none" >
                         <td>
                             <div class="ml-3">
-                                <p class="text-gray-500">{{ $loop->iteration }} : {{ $item->positive }}</p>
+                                <p class="text-gray-500">{{ $loop->iteration }}</p>
                             </div>
                         </td>
                         <td>
@@ -84,6 +101,7 @@
                                         @if ($item->id == $offer->store_id)
                                             <div class="relative rounded-full column ">
                                                 <p class="block ml-2 text-xs leading-none text-gray-400">
+                                                    {{ $offer->partner_rating }}%
                                                     {{ ($offer->retail_price) ? $offer->retail_price : $offer->old_price }} ₼
                                                 </p>
                                                 <span class="absolute bottom-0 px-1 py-0.5 text-xs text-white transition-opacity duration-300 transform-translate-x-1/2 bg-black opacity-0 pointer-events-none left-1/2 hover:opacity-100">
@@ -140,12 +158,11 @@
                     @endforeach
                 </tbody>
             </table>
-            <div>
-                {{ $products->appends(['sortBy' => $sort])->links() }}
-            </div>
+
         </div>
     </div>
 </div>
+</x-app-layout>
 @livewireScripts
         <style>.checkbox:checked + .check-icon {
   display: flex;
