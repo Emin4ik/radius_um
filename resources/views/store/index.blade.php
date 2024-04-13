@@ -9,44 +9,31 @@
 <div class="w-full">
     <div class="px-4 py-4 md:px-10 md:py-7">
         <div class="flex items-center justify-between">
-            <p tabindex="0" class="text-base font-bold leading-normal text-gray-200 focus:outline-none sm:text-lg md:text-xl lg:text-2xl">{{$merchant->name}} </p>
+            <p tabindex="0" class="text-base font-bold leading-normal text-gray-200 focus:outline-none sm:text-lg md:text-md lg:text-md">{{$merchant->name}}
+                <span class="inline-flex items-center px-1 py-1 text-sm font-bold text-gray-600 rounded-md bg-gray-50 ring-1 ring-inset ring-gray-500/10">{{$store_rating}}%</span>
+            </p>
             <div class="flex items-center text-sm font-medium leading-none text-gray-400 bg-gray-200 rounded cursor-pointer">
                 @livewire('Loader')
             </div>
         </div>
     </div>
-
-    {{-- <div class="px-4 py-4 md:px-10 md:py-7">
-    </div> --}}
-    <div class="px-4 py-4 bg-white md:py-7 md:px-8 xl:px-10">
+    <div class="px-4 py-4 bg-white md:py-7 md:px-8 xl:px-10 dark:bg-slate-800">
         <div class="items-center justify-between sm:flex">
             <div class="flex items-center">
-                {{-- @php
-                    {{ $positive = 0; }}
-                @endphp
-                @if (isset($_GET['sortBy']) && $_GET['sortBy'] && $_GET['sortBy']==='positive')
-                    @php $positive = 1; @endphp
-                @else
-                    @php $positive = 0; @endphp
-                @endif --}}
                 @php
                     $positive = (isset($_GET['sortBy']) && $_GET['sortBy'] === 'positive') ? 1 : 0;
                 @endphp
-                {{-- {{dd($positive)}} --}}
-                <a href="{{route('store', ['id'=>$merchant->id,'sortBy' => 'negative'])}}" class="ml-4 rounded-full focus:outline-none focus:ring-2 focus:bg-indigo-50 focus:ring-indigo-800 sm:ml-8">
-                    <div class="px-8 py-2 text-gray-600 {{ ($positive!==1) ? 'bg-indigo-100' : '' }} rounded-full hover:text-indigo-700 hover:bg-indigo-200 ">
-                        <p>Negative</p>
+                <a href="{{route('store', ['id'=>$merchant->id,'sortBy' => 'negative'])}}" class="ml-4 rounded-full focus:outline-none focus:ring-2 focus:bg-indigo-400 focus:ring-indigo-800 sm:ml-8 dark:text-white">
+                    <div class="px-8 py-2 text-gray-600 {{ ($positive!==1) ? 'bg-red-500' : '' }} rounded-full hover:text-indigo-700 hover:bg-indigo-400 ">
+                        <p class="dark:text-white">Negative - {{$negative_count}}</p>
                     </div>
                 </a>
-                <a href="{{route('store', ['id'=>$merchant->id,'sortBy' => 'positive'])}}" class="ml-4 rounded-full focus:outline-none focus:ring-2 focus:bg-indigo-50 focus:ring-indigo-800 sm:ml-8">
-                    <div class="px-8 py-2 text-indigo-700 {{ ($positive!==1) ? '' : 'bg-indigo-100' }} rounded-full hover:text-indigo-700 hover:bg-indigo-200 ">
-                        <p>Positive</p>
+                <a href="{{route('store', ['id'=>$merchant->id,'sortBy' => 'positive'])}}" class="ml-4 rounded-full focus:outline-none focus:ring-2 focus:bg-indigo-50 focus:ring-indigo-800 sm:ml-8 dark:text-white">
+                    <div class="px-8 py-2 text-white {{ ($positive!==1) ? '' : 'bg-green-500' }} rounded-full hover:text-indigo-700 hover:bg-indigo-400 ">
+                        <p class="dark:text-white" >Positive - {{$count}}</p>
                     </div>
                 </a>
             </div>
-            {{-- <button class="inline-flex items-start justify-start px-6 py-3 mt-4 bg-indigo-700 rounded pointer-events-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 sm:mt-0 hover:bg-indigo-600 focus:outline-none">
-                <p class="text-sm font-medium leading-none text-white">Total products: {{$merchant->total_rows}}</p>
-            </button> --}}
             <div>
                 {{ $products->appends(['sortBy' => $sort])->links() }}
             </div>
@@ -55,16 +42,21 @@
         <div class="overflow-x-auto mt-7">
             <table class="w-full whitespace-nowrap">
                 <tbody>
-                    {{-- @php
-                     dd(session()->get('merchant_id'));
-                    @endphp --}}
                     @foreach ($products as $item)
                         @if ($item->default_merchant_uuid == session()->get('merchant_id'))
-                            @php $color = 'border-gray-100'; $bg_color = 'bg-slate-50'; @endphp
+                        {{-- @php
+                            $color = $darkModeEnabled ? 'border-gray-100' : 'border-gray-300';
+                            $bg_color = $darkModeEnabled ? 'bg-slate-50' : 'bg-white';
+                        @endphp --}}
+                            @php $color = 'border-gray-100'; $bg_color = 'bg-slate-50 dark:bg-slate-700'; @endphp
                         @else
-                            @php $color = 'border-red-300'; $bg_color = 'bg-red-50'; @endphp
+                            {{-- @php
+                                $color = $darkModeEnabled ? 'border-red-300' : 'border-red-500';
+                                $bg_color = $darkModeEnabled ? 'bg-red-50' : 'bg-red-100';
+                            @endphp --}}
+                            @php $color = 'border-red-300'; $bg_color = 'bg-red-50 dark:bg-slate-900'; @endphp
                         @endif
-                        <tr tabindex="0" class="h-16 border {{ $bg_color }} focus:outline-none" >
+                        <tr tabindex="0" class="h-16 {{ $bg_color }} focus:outline-none " >
                         <td>
                             <div class="ml-3">
                                 <p class="text-gray-500">{{ $loop->iteration }}</p>
@@ -73,7 +65,7 @@
                         <td>
                             <div class="ml-5">
                                 <div class="relative flex items-center justify-center flex-shrink-0 w-5 h-5 bg-gray-200 rounded-sm">
-                                    <input placeholder="checkbox" type="checkbox" class="absolute w-full h-full opacity-0 cursor-pointer focus:opacity-100 checkbox" />
+                                    {{-- <input placeholder="checkbox" type="checkbox" class="absolute w-full h-full opacity-0 cursor-pointer focus:opacity-100 checkbox" /> --}}
                                     <div class="hidden text-white bg-indigo-700 rounded-sm check-icon">
                                         <svg class="icon icon-tabler icon-tabler-check" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                             <path stroke="none" d="M0 0h24v24H0z"></path>
@@ -85,8 +77,8 @@
                         </td>
                         <td class="">
                             <div class="flex items-center pl-5">
-                                <img src="{{$item->img_url_thumbnail}}" width="50" alt="good name">
-                                <p class="ml-1 text-sm leading-none text-gray-700">{{$item->name}}</p>
+                                <img class="p-1" src="{{$item->img_url_thumbnail}}" width="50" alt="good name">
+                                <p class="ml-1 text-sm leading-none text-gray-700 dark:text-white">{{$item->name}}</p>
                             </div>
                         </td>
                         <td class="pl-24">
@@ -95,7 +87,7 @@
                                     <path d="M9.16667 2.5L16.6667 10C17.0911 10.4745 17.0911 11.1922 16.6667 11.6667L11.6667 16.6667C11.1922 17.0911 10.4745 17.0911 10 16.6667L2.5 9.16667V5.83333C2.5 3.99238 3.99238 2.5 5.83333 2.5H9.16667" stroke="#52525B" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"></path>
                                     <circle cx="7.50004" cy="7.49967" r="1.66667" stroke="#52525B" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"></circle>
                                 </svg>
-                                <p class="ml-2 text-sm leading-none text-gray-600">{{ ($item->retail_price) ? $item->retail_price : $item->old_price }} ₼</p>
+                                <p class="ml-2 text-sm leading-none text-gray-600 dark:text-white">{{ ($item->retail_price) ? $item->retail_price : $item->old_price }} ₼</p>
                                 <div class=" flex-column">
                                     @foreach ($offers as $offer)
                                         @if ($item->id == $offer->store_id)
@@ -114,10 +106,7 @@
 
                             </div>
                         </td>
-
-
                         <td class="pl-5">
-                            {{-- <button class="px-3 py-3 text-sm leading-none text-red-700 bg-red-100 rounded focus:outline-none">Due today at 18:00</button> --}}
                             <div class="flex" >
                                 @foreach ($offers as $offer)
                                     @if ($item->id == $offer->store_id)
@@ -131,9 +120,6 @@
                                 @endforeach
                             </div>
                         </td>
-                        {{-- <td class="pl-4">
-                            <button class="px-5 py-3 text-sm leading-none text-gray-600 bg-gray-100 rounded focus:ring-2 focus:ring-offset-2 focus:ring-red-300 hover:bg-gray-200 focus:outline-none">View</button>
-                        </td> --}}
                         <td>
                             <div class="relative px-5 pt-2">
                                 <button class="rounded-md focus:ring-2 focus:outline-none" onclick="dropdownFunction(this)" role="button" aria-label="option">
@@ -164,25 +150,26 @@
 </div>
 </x-app-layout>
 @livewireScripts
-        <style>.checkbox:checked + .check-icon {
-  display: flex;
-}
-.relative:hover .absolute {
-    opacity: 1;
-    z-index: 9999;
-}
+<style>
+    .checkbox:checked + .check-icon {
+    display: flex;
+    }
+    .relative:hover .absolute {
+        opacity: 1;
+        z-index: 9999;
+    }
 </style>
 <script>
     function dropdownFunction(element) {
-            var dropdowns = document.getElementsByClassName("dropdown-content");
-            var i;
-            let list = element.parentElement.parentElement.getElementsByClassName("dropdown-content")[0];
-            list.classList.add("target");
-            for (i = 0; i < dropdowns.length; i++) {
-                if (!dropdowns[i].classList.contains("target")) {
-                    dropdowns[i].classList.add("hidden");
-                }
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        var i;
+        let list = element.parentElement.parentElement.getElementsByClassName("dropdown-content")[0];
+        list.classList.add("target");
+        for (i = 0; i < dropdowns.length; i++) {
+            if (!dropdowns[i].classList.contains("target")) {
+                dropdowns[i].classList.add("hidden");
             }
-            list.classList.toggle("hidden");
         }
-    </script>
+        list.classList.toggle("hidden");
+    }
+</script>

@@ -12,9 +12,11 @@ use Livewire\Component;
 
 class Loader extends Component
 {
-
+    public $isLoading = false;
     public function loadGoods(){
+        $this->isLoading = true;
         $this->getGoods();
+        $this->isLoading = false;
     }
 
     protected function getGoods(){

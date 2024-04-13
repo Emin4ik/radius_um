@@ -19,6 +19,7 @@ class MerchantController extends Controller
             'merchant' => 'required|max:255'
         ]);
         $result = $this->checkMerchant($validated['merchant']);
+        // dd($result);
         if(count($result['merchants']) > 0){
             $request->session()->put('shop', $validated['merchant']);
             $request->session()->put('shop_id', $result['merchants'][0]['internal_id']);
@@ -68,6 +69,7 @@ class MerchantController extends Controller
             $response = Http::get($url);
             if ($response->successful()) {
                 $responseData = $response->json();
+                // dd($responseData);
                 if (isset($responseData['data']['results'])) {
                     $products = $responseData['data']['results']['products'];
                     $merchants = $responseData['data']['results']['merchants'];
