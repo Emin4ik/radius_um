@@ -1,7 +1,7 @@
 {{-- {{dd(session()->all())}} --}}
 
 @if (session()->has('success'))
-    <div> <p class="text-white"> {{ session('success') }} </p></div>
+    {{-- <div> <p class="text-white"> {{ session('success') }} </p></div> --}}
 @endif
 @livewireStyles
 <script src="https://cdn.tailwindcss.com"></script>
@@ -43,20 +43,15 @@
             <table class="w-full whitespace-nowrap">
                 <tbody>
                     @foreach ($products as $item)
+                    @php
+                        $competitors = 0;
+                    @endphp
                         @if ($item->default_merchant_uuid == session()->get('merchant_id'))
-                        {{-- @php
-                            $color = $darkModeEnabled ? 'border-gray-100' : 'border-gray-300';
-                            $bg_color = $darkModeEnabled ? 'bg-slate-50' : 'bg-white';
-                        @endphp --}}
-                            @php $color = 'border-gray-100'; $bg_color = 'bg-slate-50 dark:bg-slate-700'; @endphp
+                            @php $color = ''; $bg_color = 'bg-slate-700 border-green-500 dark:border-green-500 dark:bg-slate-700'; @endphp
                         @else
-                            {{-- @php
-                                $color = $darkModeEnabled ? 'border-red-300' : 'border-red-500';
-                                $bg_color = $darkModeEnabled ? 'bg-red-50' : 'bg-red-100';
-                            @endphp --}}
-                            @php $color = 'border-red-300'; $bg_color = 'bg-red-50 dark:bg-slate-900'; @endphp
+                            @php $color = ''; $bg_color = 'bg-slate-700 border-red-500 dark:border-red-500 dark:bg-slate-700'; @endphp
                         @endif
-                        <tr tabindex="0" class="h-16 {{ $bg_color }} focus:outline-none " >
+                        <tr tabindex="0" class="h-16 border-x-2 {{ $bg_color }} focus:outline-none " >
                         <td>
                             <div class="ml-3">
                                 <p class="text-gray-500">{{ $loop->iteration }}</p>
@@ -92,12 +87,12 @@
                                     @foreach ($offers as $offer)
                                         @if ($item->id == $offer->store_id)
                                             <div class="relative rounded-full column ">
-                                                <p class="block ml-2 text-xs leading-none text-gray-400">
-                                                    {{ $offer->partner_rating }}%
+                                                <p class="block ml-2 text-xs leading-none {{ strtolower(session()->get('shop')) == strtolower($offer->name) ? 'text-green-400' : 'text-gray-400' }} ">
+                                                    R: {{ $offer->partner_rating }}% -
                                                     {{ ($offer->retail_price) ? $offer->retail_price : $offer->old_price }} ₼
                                                 </p>
                                                 <span class="absolute bottom-0 px-1 py-0.5 text-xs text-white transition-opacity duration-300 transform-translate-x-1/2 bg-black opacity-0 pointer-events-none left-1/2 hover:opacity-100">
-                                                    {{$offer->name}}
+                                                    Rating: {{$offer->partner_rating}}% | {{$offer->name}}
                                                 </span>
                                             </div>
                                         @endif
@@ -110,15 +105,36 @@
                             <div class="flex" >
                                 @foreach ($offers as $offer)
                                     @if ($item->id == $offer->store_id)
+                                    @php
+                                         $competitors++;
+                                    @endphp
                                         <div class="relative inline-block rounded-full">
                                             <img class="w-10 h-10 ml-1 border-red-950" src="{{$offer->logo}}" alt="{{$offer->name}}">
                                             <span class="absolute bottom-0 px-2 py-1 text-xs text-white transition-opacity duration-300 transform -translate-x-1/2 bg-black opacity-0 pointer-events-none left-1/2 hover:opacity-100">
-                                                {{$offer->name}}
+                                                Rating: {{$offer->partner_rating}}% | {{$offer->name}}
                                             </span>
                                         </div>
                                     @endif
                                 @endforeach
+
                             </div>
+                        </td>
+                        <td>
+                            <div class="relative inline-block rounded-full">
+                                @if ($competitors <= 2)
+                                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-green-700 bg-green-300 rounded-md ring-1 ring-inset ring-green-600/20">{{$competitors}}</span>
+                                @elseif ($competitors >2 && $competitors <=5)
+                                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-yellow-800 bg-yellow-300 rounded-md ring-1 ring-inset ring-yellow-600/20">{{$competitors}}</span>
+                                @else
+                                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-red-700 bg-red-300 rounded-md ring-1 ring-inset ring-red-600/10">{{$competitors}}</span>
+                                @endif
+                                <span class="absolute bottom-0 px-2 py-1 text-xs text-white transition-opacity duration-300 transform -translate-x-1/2 bg-black opacity-0 pointer-events-none left-1/2 hover:opacity-100">
+                                    Competitors: {{$competitors}}
+                                </span>
+                            </div>
+                        </td>
+                        <td class="hidden" >
+                            {{ $competitors }}
                         </td>
                         <td>
                             <div class="relative px-5 pt-2">
@@ -139,12 +155,18 @@
                                 </div>
                             </div>
                         </td>
+
                     </tr>
                     <tr class="h-3"></tr>
+                    @php
+                        $competitors = 0;
+                    @endphp
                     @endforeach
                 </tbody>
             </table>
-
+            <div>
+                {{ $products->appends(['sortBy' => $sort])->links() }}
+            </div>
         </div>
     </div>
 </div>
