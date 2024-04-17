@@ -44,8 +44,15 @@ class MerchantController extends Controller
             return redirect()->route('merchant')->with('error', 'No Merchant founded');
         }
         $url = 'https://umico.az/catalog/v3/market/products?page=1&per_page=1&q[opaque_id]=/ru/merchant/' . urlencode(session()->get('shop')) . '?page=2&q[seller_marketing_name_id_eq]=' . session()->get('shop_id') . '&include_fields=id&exclude_fields=ratings.questions,ratings.assessment_id,ratings.product_id&q[search_mode]=seller&q[response_mode]=default&q[default_facets]=true&q[s]=discount_score desc&q[status_in]=active';
+        $headers = [
+            'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36',
+            'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+            'Accept-Encoding' => 'gzip, deflate, br',
+            'Accept-Language' => 'en-US,en;q=0.9',
+            'Connection' => 'keep-alive',
+        ];
         try {
-            $response = Http::get($url);
+            $response = Http::withHeaders($headers)->get($url);
             if ($response->successful()) {
                 $responseData = $response->json();
                 if (isset($responseData['meta'])) {

@@ -47,9 +47,9 @@
                         $competitors = 0;
                     @endphp
                         @if ($item->default_merchant_uuid == session()->get('merchant_id'))
-                            @php $color = ''; $bg_color = 'bg-slate-700 border-green-500 dark:border-green-500 dark:bg-slate-700'; @endphp
+                            @php $color = ''; $bg_color = 'bg-slate-700 border-green-500 dark:border-green-500 dark:bg-slate-700 positive-bg'; @endphp
                         @else
-                            @php $color = ''; $bg_color = 'bg-slate-700 border-red-500 dark:border-red-500 dark:bg-slate-700'; @endphp
+                            @php $color = ''; $bg_color = 'bg-slate-700 border-red-500 dark:border-red-500 dark:bg-slate-700 negative-bg'; @endphp
                         @endif
                         <tr tabindex="0" class="h-16 border-x-2 {{ $bg_color }} focus:outline-none " >
                         <td>
@@ -180,6 +180,14 @@
         opacity: 1;
         z-index: 9999;
     }
+    @layer utilities {
+        .negative-bg {
+            background-color: rgb(127 29 29 / 17%) !important;
+        }
+        .positive-bg{
+            background-color: rgb(64 127 29 / 17%) !important;
+        }
+    }
 </style>
 <script>
     function dropdownFunction(element) {
@@ -194,4 +202,5 @@
         }
         list.classList.toggle("hidden");
     }
+
 </script>

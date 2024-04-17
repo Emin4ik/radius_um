@@ -21,8 +21,15 @@ class Loader extends Component
 
     protected function getGoods(){
         $url = 'https://umico.az/catalog/v3/market/products?page=1&per_page=100&q[opaque_id]=/az/merchant/' . urlencode(session()->get('shop')) . '?page=2&q[seller_marketing_name_id_eq]='.session()->get('shop_id').'&include_fields=id,old_price,retail_price,availability,default_offer_id,img_url_thumbnail,name,categories,manufacturer,avail_check,status,slugged_name,discount,default_marketing_name,ratings,offers,offers,offers.retail_price,offers,offers.marketing_name,offers.merchant_uuid,category_id,product_labels,loyalty_cashback,default_merchant_rating,offers.id,offers.installment_enabled,offers.max_installment_months,offers.avail_check,offers.partner_rating,offers.uuid,offers.old_price,offers.seller_id,offers.seller_marketing_name,best_installment_offer_id,qty,non_refundable,offers.supplier_id,is_bulk_heavy,default_merchant_uuid,categories.path_ids&exclude_fields=ratings.questions,ratings.assessment_id,ratings.product_id&q[search_mode]=seller&q[response_mode]=default&q[default_facets]=true&q[s]=discount_score desc&q[status_in]=active';
+        $headers = [
+            'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36',
+            'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+            'Accept-Encoding' => 'gzip, deflate, br',
+            'Accept-Language' => 'en-US,en;q=0.9',
+            'Connection' => 'keep-alive',
+        ];
         try {
-            $response = Http::get($url);
+            $response = Http::withHeaders($headers)->get($url);
             if ($response->successful()) {
 
                 $responseData = $response->json();
@@ -96,6 +103,7 @@ class Loader extends Component
             dd($e);
             return false;
         }
+        // header("Refresh:0");
     }
 
     public function render(){
