@@ -31,13 +31,13 @@ class MerchantController extends Controller
         if($result){
             $merchant = new Merchant();
             $merchant->user_id = Auth::id();
-            $merchant->name = $result['merchants'][0]['name'];
-            $merchant->internal_id = $result['merchants'][0]['internal_id'];
-            $merchant->merchant_id = $result['merchants'][0]['partners_ext_ids'][0];
-            $merchant->uniq_id = $result['merchants'][0]['id'];
-            $merchant->ext_id = $result['merchants'][0]['ext_id'];
-            $merchant->thumb = $result['merchants'][0]['logo']['thumbnail'];
-            $merchant->original = $result['merchants'][0]['logo']['original'];
+            $merchant->name = $result['merchants'][0]['name'] ?? null;
+            $merchant->internal_id = $result['merchants'][0]['internal_id'] ?? null;
+            $merchant->merchant_id = $result['merchants'][0]['partners_ext_ids'][0] ?? null;
+            $merchant->uniq_id = $result['merchants'][0]['id'] ?? null;
+            $merchant->ext_id = $result['merchants'][0]['ext_id'] ?? null;
+            $merchant->thumb = $result['merchants'][0]['logo']['thumbnail'] ?? null;
+            $merchant->original = $result['merchants'][0]['logo']['original'] ?? null;
             $merchant->save();
             $merchantId = $merchant->id;
         }else{

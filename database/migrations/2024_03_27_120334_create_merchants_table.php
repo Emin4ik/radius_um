@@ -20,8 +20,8 @@ return new class extends Migration
             $table->integer('uniq_id');
             $table->string('ext_id', 72)->unique();
             $table->integer('total_rows')->nullable();
-            $table->string('thumb', 120);
-            $table->string('original', 120);
+            $table->string('thumb', 120)->nullable();
+            $table->string('original', 120)->nullable();
             $table->timestamps();
         });
     }

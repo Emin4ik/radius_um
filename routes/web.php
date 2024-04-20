@@ -21,7 +21,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('merchant', [MerchantController::class, 'index'])->name('merchant');
 
-    Route::post('merchant.create', [MerchantController::class, 'create'])->name('merchant.create');
+    Route::post('merchant/create', [MerchantController::class, 'create'])->name('merchant.create');
 
     Route::get('store/{id}', [StoreController::class, 'index'])->name('store');
 

@@ -1,5 +1,8 @@
 {{-- {{dd(session()->all())}} --}}
-
+@section('title', $merchant->name)
+@section('favicon')
+    <link rel="icon" href="{{ $merchant->thumb }}" type="image/png">
+@endsection
 @if (session()->has('success'))
     {{-- <div> <p class="text-white"> {{ session('success') }} </p></div> --}}
 @endif
@@ -23,6 +26,9 @@
                 @php
                     $positive = (isset($_GET['sortBy']) && $_GET['sortBy'] === 'positive') ? 1 : 0;
                 @endphp
+                <div>
+                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-600 rounded-md bg-gray-50 ring-1 ring-inset ring-gray-500/10">Total: {{$merchant->total_rows}}</span>
+                </div>
                 <a href="{{route('store', ['id'=>$merchant->id,'sortBy' => 'negative'])}}" class="ml-4 rounded-full focus:outline-none focus:ring-2 focus:bg-indigo-400 focus:ring-indigo-800 sm:ml-8 dark:text-white">
                     <div class="px-8 py-2 text-gray-600 {{ ($positive!==1) ? 'bg-red-500' : '' }} rounded-full hover:text-indigo-700 hover:bg-indigo-400 ">
                         <p class="dark:text-white">Negative - {{$negative_count}}</p>

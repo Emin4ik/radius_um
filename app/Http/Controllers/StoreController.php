@@ -32,7 +32,7 @@ class StoreController extends Controller
         $products = DB::table('stores')
             ->select('stores.id', 'stores.positive' ,'stores.default_merchant_uuid' ,'stores.old_price', 'stores.retail_price', 'stores.discount', 'stores.img_url_thumbnail', 'stores.manufacturer', 'stores.score', 'stores.name')
             ->orderBy('positive', $asc)
-            ->paginate(10);
+            ->paginate(50);
 
         $positive_count = 0;
         $total = 0;
