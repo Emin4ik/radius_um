@@ -115,7 +115,7 @@
                                          $competitors++;
                                     @endphp
                                         <div class="relative inline-block rounded-full">
-                                            <img class="w-10 h-10 ml-1 border-red-950" src="{{$offer->logo}}" alt="{{$offer->name}}">
+                                            <img class="inline-block w-8 h-8 rounded-full ring-2 ring-white" src="{{$offer->logo}}" alt="{{$offer->name}}">
                                             <span class="absolute bottom-0 px-2 py-1 text-xs text-white transition-opacity duration-300 transform -translate-x-1/2 bg-black opacity-0 pointer-events-none left-1/2 hover:opacity-100">
                                                 Rating: {{$offer->partner_rating}}% | {{$offer->name}}
                                             </span>
