@@ -107,7 +107,28 @@
 
                         document.getElementById('commentBox').value = '';
                       }
-                      Livewire.dispatch('commentAdded', { latitude: userLocation[0], longitude: userLocation[1] });
+
+                      Livewire.on('commentAdded', function(data) {
+                        var customIcon = L.divIcon({
+                            className: 'custom-marker-icon',
+                            html: '<div class="pointer"></div><div class="comment-text">' + data.commentText + '</div>',
+                            iconSize: [150, 30],
+                            iconAnchor: [75, 30],
+                        });
+
+                        // var marker = L.marker([data.latitude, data.longitude], { icon: customIcon });
+                        var marker = L.marker([data.latitude, data.longitude], { icon: customIcon }).addTo(map);
+                        markers.addLayer(marker);
+                        map.addLayer(markers);
+                    });
+
+
+
+
+
+                      Livewire.dispatch('commentAdded', { latitude: userLocation[0], longitude: userLocation[1], commentText: 'd' });
+
+
                     }
 
                     function checkNearbyComments(referenceLocation, radius) {

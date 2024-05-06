@@ -9,14 +9,6 @@ use Illuminate\Support\Facades\Auth;
 class LeaveComment extends Component
 {
     public $commentText;
-    // public $latitude;
-    // public $longitude;
-
-    // public function mount($latitude, $longitude)
-    // {
-    //     $this->latitude = $latitude;
-    //     $this->longitude = $longitude;
-    // }
 
     public function render()
     {
@@ -36,10 +28,20 @@ class LeaveComment extends Component
             'status' => 1
         ]);
 
+        // $this->emit('commentAdded', [
+        //     'latitude' => $latitude,
+        //     'longitude' => $longitude,
+        //     'commentText' => $this->commentText,
+        // ]);
+
         $this->reset('commentText');
 
         // Emit a Livewire event to update the UI or map
-        $this->dispatch('commentAdded', ['latitude' => $latitude, 'longitude' => $longitude]);
-    
+        $this->dispatch('commentAdded', [
+            'latitude' => $latitude,
+            'longitude' => $longitude,
+            'commentText' => $this->commentText,
+        ]);
+
     }
 }
